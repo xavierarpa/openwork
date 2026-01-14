@@ -407,12 +407,10 @@ export default function App() {
       }
 
       return true;
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Unknown error");
-      return false;
-    } finally {
-      setBusy(false);
-    }
+                          } catch (e) {
+                            setError(e instanceof Error ? e.message : safeStringify(e));
+                          }
+
   }
 
   async function stopHost() {
@@ -1141,7 +1139,7 @@ export default function App() {
                               );
                             }
                           } catch (e) {
-                            setError(e instanceof Error ? e.message : "Unknown error");
+                            setError(e instanceof Error ? e.message : safeStringify(e));
                           }
                         }}
                         disabled={busy()}
@@ -2004,12 +2002,12 @@ export default function App() {
                           return developerMode();
                         }
 
-                        if (
-                          p.type === "text" ||
-                          p.type === "tool" ||
-                          p.type === "step-start" ||
-                          p.type === "step-finish"
-                        ) {
+                        if (p.type === "step-start" || p.type === "step-finish") {
+                          // Too noisy for normal users.
+                          return developerMode();
+                        }
+
+                        if (p.type === "text" || p.type === "tool") {
                           return true;
                         }
 
@@ -2029,7 +2027,11 @@ export default function App() {
                             <For each={renderableParts()}>
                               {(p, idx) => (
                                 <div class={idx() === renderableParts().length - 1 ? "" : "mb-2"}>
-                                  <PartView part={p} developerMode={developerMode()} />
+                                  <PartView
+                                    part={p}
+                                    developerMode={developerMode()}
+                                    tone={msg.info.role === "user" ? "dark" : "light"}
+                                  />
                                 </div>
                               )}
                             </For>

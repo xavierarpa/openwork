@@ -1,0 +1,9 @@
+{
+  "identifier": "openwork-default",
+  "description": "Default OpenWork capability (UI permissions)",
+  "windows": ["*"],
+  "permissions": [
+    "core:default",
+    "dialog:allow-open"
+  ]
+}
